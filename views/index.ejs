@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,800' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src='//ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js' type='text/javascript'> </script>
+    <script src="http://code.jquery.com/color/jquery.color-2.1.2.js"></script>
+</head>
+<center>
+<body>
+    <div id = "header"><h1> HOOZAT? </h1></div>
+
+    <% if(typeof(user) != 'undefined') { %>
+    <div id = "tweetbar">    
+        <p id = "tweet"> <%= tweet.text %></p>
+    </div>
+    <div id = "whothat">
+        <p id = "who">
+            Who said that?
+        </p>
+    </div>
+    <div id = "container">
+        <div id = "left">
+            <div class = "pro">
+                <div><img height="72" width="72" class="fleft" src="<%=friends_data[0].photo %>"></div>
+                <div class="text">
+                    <div class="fleft tophalf"><p class = "fleft name"><%= friends_data[0].name %> </p></div>
+                    <div class="fleft bottomhalf"><p class = "fleft handle">@<%= friends_data[0].screen_name %> </p></div>
+                </div>
+            </div>
+            <div class = "pro">
+                <div><img class="fleft" height="72" width="72" src="<%=friends_data[1].photo %>"></div>
+                <div class="text">
+                    <div class="fleft tophalf"><p class = "fleft name"><%= friends_data[1].name %> </p></div>
+                    <div class="fleft bottomhalf"><p class = "fleft handle">@<%= friends_data[1].screen_name %> </p></div>
+                </div>
+            </div>
+            <div class = "pro">
+                <div><img class="fleft" height="72" width="72" src="<%=friends_data[2].photo %>"></div>
+                <div class="text">
+                    <div class="fleft tophalf"><p class = "fleft name"><%= friends_data[2].name %> </p></div>
+                    <div class="fleft bottomhalf"><p class = "fleft handle">@<%= friends_data[2].screen_name %> </p></div>
+                </div>
+            </div>
+        </div>
+        <div id = "right">
+            <div class = "pro">
+                <div><img class="fright" height="72" width="72" src="<%=friends_data[3].photo %>"></div>
+                <div class="text">
+                    <div class="fright tophalf"><p class = "fright name"><%= friends_data[3].name %></p></div>
+                    <div class="fright bottomhalf"><p class = "fright handle">@<%= friends_data[3].screen_name %></p></div>
+                </div>
+            </div>
+            <div class = "pro">
+                <div><img class="fright" height="72" width="72" src="<%=friends_data[4].photo %>"></div>
+                <div class="text">
+                    <div class="fright tophalf"><p class = "fright name"><%= friends_data[4].name %></p></div>
+                    <div class="fright bottomhalf"><p class = "fright handle">@<%= friends_data[4].screen_name %></p></div>
+                </div>
+            </div>
+            <div class = "pro">
+                <div><img class="fright" height="72" width="72" src="<%=friends_data[5].photo %>"></div>
+                <div class="text">
+                    <div class="fright tophalf"><p class = "fright name"><%= friends_data[5].name %></p></div>
+                    <div class="fright bottomhalf"><p class = "fright handle">@<%= friends_data[5].screen_name %></p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id = "scoreboard">
+      
+    </div>
+    <% } else { %>
+        <a href="auth/twitter"> login </a></a>
+    <% } %>
+</body>
+</center>
+<footer>
+        <script> 
+            <% if(typeof(asyncResults) != 'undefined') { %>
+                var results = <%- JSON.stringify(asyncResults) %> 
+                var tweeter = <%- JSON.stringify(tweeter) %>
+                var friend_ids = <%- JSON.stringify(friend_ids) %>
+                var rand_friend; var six_rand_friends = {};
+                $('.pro').click(function() {
+                    if( "@" + tweeter.screen_name.trim() === $(this).find(".handle")[0].innerText.trim()) {
+                        $(this).css('background-color', 'rgba(0, 255, 36, 0.5)');
+                    }
+                    else {
+                        $(this).css('background-color', 'rgba(233, 37, 37, 0.5)');
+                    }
+
+                    while (Object.keys(six_rand_friends).length < 6 && friend_ids.length >= Object.keys(six_rand_friends).length) {
+                        rand_friend = friend_ids[Math.floor(Math.random() * friend_ids.length)];
+                        six_rand_friends[rand_friend] = true;
+                    }
+                });
+            <% } %> 
+            
+        </script> 
+
+</footer>
+</html>
