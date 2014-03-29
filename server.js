@@ -88,51 +88,59 @@ app.get('/', function(req, res){
                  access_token_secret:  req.user.info.access_token_secret}
                  );
         async.series({
-                // creates hash, questions = {num => {choices, chosen, tweet}}
-                friends: function(callback){
-                    T.get('friends/ids', { screen_name: req.user.username },  function (err, reply) {
-                        if(err === null) {
-                            var rand_friend; var six_rand_friends; var questions = {};
-                            for (var i= 0; i < 3; i++) {
-                                six_rand_friends = {};
-                                while (Object.keys(six_rand_friends).length < 6 && reply.ids.length >= Object.keys(six_rand_friends).length) {
-                                    rand_friend = reply.ids[Math.floor(Math.random() * reply.ids.length)];
-                                    six_rand_friends[rand_friend] = true;
-                                }
-                                questions[i] = { choices: six_rand_friends, chosen: rand_friend, tweet:""};
-                            }
-                            
-                            params.questions = questions;
-                            params.chosen = rand_friend;
-                            params.six_rand_friends = Object.keys(six_rand_friends);
-                            params.friend_ids = reply.ids;
-                        }
-                        callback(err, reply);
-                    });
-                },
-/**/
+            get_friends: function(callback){
+                         if(! req.user.friends) {     
+                             T.get('friends/ids', { screen_name: req.user.username },  function (err, reply) {
+                                 if(err === null) {
+                                     req.user.friends = reply;
+                                     friends = req.user.friends;
+                                 }
+                                 callback(err, friends);
+                             });
+                         } else {
+                             callback();
+                         }
+                     },
+            pick_the_six_friends: function(callback) {
+
+                         var rand_friend; var six_rand_friends;
+                         six_rand_friends = {};
+                         while (Object.keys(six_rand_friends).length < 6 && 
+                             friends.ids.length >= Object.keys(six_rand_friends).length) {
+                             rand_friend = friends.ids[Math.floor(Math.random() * friends.ids.length)];
+                             six_rand_friends[rand_friend] = true;
+                         }
+
+                         params.chosen = rand_friend;
+                         params.six_rand_friends = Object.keys(six_rand_friends);
+                         params.friend_ids = friends.ids;
+                         callback(null, params.six_rand_friends);
+                     },
+                /**/
                 friends_data: function(callback){
-                    T.get('users/lookup', { user_id: params.six_rand_friends }, function (err, reply) {
-                        if(err === null) {
-                            params.friends_data = reply;
-                            for(var i in reply) {
-                                reply[i].photo = reply[i].profile_image_url.replace("_normal","_bigger");
-                            }
-                        }
-                        callback(err, reply);
-                    });
-                },
+                                  T.get('users/lookup', { user_id: params.six_rand_friends }, function (err, reply) {
+                                      if(err === null) {
+                                          params.friends_data = reply;
+                                          for(var i in reply) {
+                                              reply[i].photo = reply[i].profile_image_url.replace("_normal","_bigger");
+                                          }
+                                      }
+                                      callback(err, reply);
+                                  });
+                              },
                 tweets: function(callback){
-                    T.get('statuses/user_timeline', { user_id: params.chosen, count: 200, exclude_replies: true, include_rts: false },  function (err, reply) {
-                        if(err === null) {
-                            var rand_tweet = reply[Math.floor(Math.random() * reply.length)];
-                            params.tweet = rand_tweet;
-                            params.tweeter = rand_tweet.user;
+                            T.get('statuses/user_timeline', { user_id: params.chosen, count: 200, exclude_replies: true, include_rts: false },  function (err, reply) {
+                                if(err === null) {
+                                    var rand_tweet = reply[Math.floor(Math.random() * reply.length)];
+                                    params.tweet = rand_tweet;
+                                    console.log( typeof(params.tweet)==='undefined' );
+                                    if( typeof(params.tweet) === 'undefined') { params.tweet = {text: '', user: params.chosen}}
+                                    params.tweeter = params.tweet.user;
+                                }
+                                callback(err, reply);
+                            });
                         }
-                        callback(err, reply);
-                    });
-                }
-            },
+        },
 /**/
 /*
                 // creates hash, friends_data = { id => {name, photo, screen_name} }
@@ -177,21 +185,21 @@ app.get('/', function(req, res){
             },
 */
         function(err, results) {
-            console.log(err);
+            if(err != null) { console.log(err); }
             params.asyncResults = results;
             params.user = req.user;
             res.render('index', params);
         }); 
     }
 });
-
+/* 
 io.sockets.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });
   socket.on('my other event', function (data) {
     console.log(data);
   });
 });
-
+*/ 
 app.get('/account', ensureAuthenticated, function(req, res){
   res.render('account', { user: req.user });
 });
