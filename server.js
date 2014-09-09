@@ -7,6 +7,7 @@ var async = require("async");
 
 var TWITTER_CONSUMER_KEY = "28ppMUIt20JQ2CLVh4btoA";
 var TWITTER_CONSUMER_SECRET = "22lbZ0Akhu4DZTA2rpM47uSYZKdlXp6vyRWQlb6k";
+var port = Number(process.env.PORT || 5000);
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -31,7 +32,7 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new TwitterStrategy({
     consumerKey: TWITTER_CONSUMER_KEY,
     consumerSecret: TWITTER_CONSUMER_SECRET,
-    callbackURL: "http://127.0.0.1/auth/twitter/callback"
+    callbackURL: "http://127.0.0.1:" + port + "/auth/twitter/callback"
   },
   function(token, tokenSecret, profile, done) {
     // asynchronous verification, for effect...
@@ -73,7 +74,7 @@ app.configure(function() {
 });
 
 
-app.get('/', function(req, res){
+app.get('/', function(req, res) {
     var params = {};
         
     if (!req.user) {
@@ -93,9 +94,8 @@ app.get('/', function(req, res){
                              T.get('friends/ids', { screen_name: req.user.username },  function (err, reply) {
                                  if(err === null) {
                                      req.user.friends = reply;
-                                     friends = req.user.friends;
                                  }
-                                 callback(err, friends);
+                                 callback(err, req.user.friends);
                              });
                          } else {
                              callback();
@@ -106,14 +106,14 @@ app.get('/', function(req, res){
                          var rand_friend; var six_rand_friends;
                          six_rand_friends = {};
                          while (Object.keys(six_rand_friends).length < 6 && 
-                             friends.ids.length >= Object.keys(six_rand_friends).length) {
-                             rand_friend = friends.ids[Math.floor(Math.random() * friends.ids.length)];
+                             req.user.friends.ids.length >= Object.keys(six_rand_friends).length) {
+                             rand_friend = req.user.friends.ids[Math.floor(Math.random() * req.user.friends.ids.length)];
                              six_rand_friends[rand_friend] = true;
                          }
 
                          params.chosen = rand_friend;
                          params.six_rand_friends = Object.keys(six_rand_friends);
-                         params.friend_ids = friends.ids;
+                         params.friend_ids = req.user.friends.ids;
                          callback(null, params.six_rand_friends);
                      },
                 /**/
@@ -141,49 +141,6 @@ app.get('/', function(req, res){
                             });
                         }
         },
-/**/
-/*
-                // creates hash, friends_data = { id => {name, photo, screen_name} }
-                friends_data: function(callback){
-                    params.friends_data = {};
-                    var partitions = params.friend_ids.length / 100; var p = 0;
-                    while (p<partitions) {
-                        T.get('users/lookup', { user_id: params.friend_ids.slice( 100*p, (p+1)*100 - 1) }, function (err, reply) {
-                            for(var i in reply) {
-                                params.friends_data[reply[i].id] = {
-                                    name: reply[i].name,
-                                    photo: reply[i].profile_image_url.replace("_normal","_bigger"),
-                                    screen_name: reply[i].screen_name
-                                }
-                            }
-                        }); p++;
-                    }
-                    T.get('users/lookup', {
-                        user_id: params.friend_ids.slice( 100*p, params.friends_ids.length%100 - 1) },
-                        function (err, reply) {
-                            params.friends_data = {};
-                            for(var i in reply) {
-                                params.friends_data[reply[i].id] = {
-                                    name: reply[i].name,
-                                    photo: reply[i].profile_image_url.replace("_normal","_bigger"),
-                                    screen_name: reply[i].screen_name
-                                }
-                            }
-                            callback(null, reply);
-                        });
-                },
-                // adds rand_tweet to each question
-                tweets: function(callback){
-                    for (var question in params.questions) {
-                        T.get('statuses/user_timeline', { user_id: question.chosen, count: 200, exclude_replies: true, include_rts: false },  function (err, reply) {
-                            var rand_tweet = reply[Math.floor(Math.random() * reply.length)];
-                            question.tweet = rand_tweet;
-                            callback(null, reply);
-                        });
-                    }
-                }
-            },
-*/
         function(err, results) {
             if(err != null) { console.log(err); }
             params.asyncResults = results;
@@ -231,7 +188,6 @@ app.get('/logout', function(req, res){
   res.redirect('/');
 });
 
-var port = Number(process.env.PORT || 5000);
 app.listen(port);
 
 
