@@ -7,7 +7,6 @@ var async = require("async");
 
 var TWITTER_CONSUMER_KEY = "28ppMUIt20JQ2CLVh4btoA";
 var TWITTER_CONSUMER_SECRET = "22lbZ0Akhu4DZTA2rpM47uSYZKdlXp6vyRWQlb6k";
-var port = Number(process.env.PORT || 5000);
 
 /******************************************************************************
  * passport
@@ -36,7 +35,7 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new TwitterStrategy({
     consumerKey: TWITTER_CONSUMER_KEY,
     consumerSecret: TWITTER_CONSUMER_SECRET,
-    callbackURL: "http://127.0.0.1:" + port + "/auth/twitter/callback"
+    callbackURL: "/auth/twitter/callback"
   },
   function(token, tokenSecret, profile, done) {
     // asynchronous verification, for effect...
@@ -59,7 +58,7 @@ passport.use(new TwitterStrategy({
  * app
  */
 
-var app = express(), server = require('http').createServer(app)
+var app = express(), server = require('http').createServer(app);
 
 // configure Express
 app.configure(function() {
@@ -184,6 +183,7 @@ app.get('/logout', function(req, res){
   res.redirect('/');
 });
 
+var port = Number(process.env.PORT || 5000);
 app.listen(port);
 
 /******************************************************************************
