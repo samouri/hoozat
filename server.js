@@ -9,6 +9,10 @@ var TWITTER_CONSUMER_KEY = "28ppMUIt20JQ2CLVh4btoA";
 var TWITTER_CONSUMER_SECRET = "22lbZ0Akhu4DZTA2rpM47uSYZKdlXp6vyRWQlb6k";
 var port = Number(process.env.PORT || 5000);
 
+/******************************************************************************
+ * passport
+ */
+
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
 //   serialize users into and deserialize users out of the session.  Typically,
@@ -51,10 +55,11 @@ passport.use(new TwitterStrategy({
   }
 ));
 
-
+/******************************************************************************
+ * app
+ */
 
 var app = express(), server = require('http').createServer(app)
-  , io = require('socket.io').listen(server);
 
 // configure Express
 app.configure(function() {
@@ -73,8 +78,7 @@ app.configure(function() {
   app.use(express.static(__dirname + '/public'));
 });
 
-
-app.get('/', function(req, res) {
+app.get('/', function(req, res){
     var params = {};
         
     if (!req.user) {
@@ -116,8 +120,7 @@ app.get('/', function(req, res) {
                          params.friend_ids = req.user.friends.ids;
                          callback(null, params.six_rand_friends);
                      },
-                /**/
-                friends_data: function(callback){
+            friends_data: function(callback){
                                   T.get('users/lookup', { user_id: params.six_rand_friends }, function (err, reply) {
                                       if(err === null) {
                                           params.friends_data = reply;
@@ -128,7 +131,7 @@ app.get('/', function(req, res) {
                                       callback(err, reply);
                                   });
                               },
-                tweets: function(callback){
+            tweets: function(callback){
                             T.get('statuses/user_timeline', { user_id: params.chosen, count: 200, exclude_replies: true, include_rts: false },  function (err, reply) {
                                 if(err === null) {
                                     var rand_tweet = reply[Math.floor(Math.random() * reply.length)];
@@ -149,14 +152,7 @@ app.get('/', function(req, res) {
         }); 
     }
 });
-/* 
-io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
-});
-*/ 
+
 app.get('/account', ensureAuthenticated, function(req, res){
   res.render('account', { user: req.user });
 });
@@ -190,6 +186,9 @@ app.get('/logout', function(req, res){
 
 app.listen(port);
 
+/******************************************************************************
+ * middleware
+ */
 
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
