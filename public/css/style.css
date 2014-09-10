@@ -8,105 +8,131 @@
     http://i.imgur.com/wigCInB.png
 */
 
-body{
+body {
     margin:0;
     background-color:#e5e1d0;
 }
 
-h1{
-    font-family: 'Open Sans', sans-serif;
+h1 {
+    margin:0;
+    font-size:450%;
+    font-family:"Proxima Nova";
     color:#e6e1d1;
-    text-shadow: 6px 6px #52616e;
-    font-size:650%;
-    position:absolute;
-    left:0;
-    right:0;
-    margin-left:auto;
-    margin-right:auto;
+    text-shadow:6px 6px #52616e;
 }
-
-
 
 #header {
-    width:100%;
-    height:252px;
-    margin-left: 0;
-    padding-left: 0;
-    background-color:#2c343b;
     z-index:2;
-}
-
-#tweetbar {
     width:100%;
-    height:106px; 
-    background-color:#ffffff;
-    z-index:1;
-    
-}
-
-#whothat {
-    width:100%;
-    height:26px;
-    margin-left: 0;
-    padding-left: 0;
-}
-
-#left {
-    float:left;
-    width:400px;
-    height:600px;
-}
-
-#right {
-    float:right;
-    width:400px;
-    height:600px;
-}
-
-#quotes {
-    position:absolute;
-    TOP:265px; 
-    left:0;
-    right:0;    
-    margin-left:auto;
-    margin-right:auto;
+    background-color:#2c343b;
 }
 
 #who {
     color:#52616e;
-    font-family:"Verdana";
-    font-size:200%;
-    position:absolute;
-    top:335px; 
-    left:0;
-    right:0;    
-    margin-left:auto;
-    margin-right:auto;
-    
+    font-family:"Proxima Nova";
+    font-size:150%;
+    margin:0px
+}
+
+#who-bar {
+    width:100%;
+    margin-top:10px;
+    margin-bottom:5px;
 }
 
 #tweet {
     color:#52616e;
-    font-family:"Verdana";
+    font-family:"Proxima Nova";
     font-size:150%;
-    position:absolute;
-    top:240px; 
-    left:0;
-    right:0;
-    margin-left:auto;
-    margin-right:auto;
+    margin:0;
+    border:10px solid white;
+}
+
+#tweet-bar {
+    width:100%;
+    background-color:#ffffff;
+    z-index:1;
 }
 
 #container {
-    width:800px;
-    margin:auto;
-    
+    min-width:400px;
+    max-width:600px;
+    height:auto;
+}
+
+.left {
+    float:left;
+}
+
+.right {
+    float:right;
+}
+
+.profile {
+    height:72px;
+    width:100%;
+    padding-top:10px;
+    padding-bottom:10px;
+}
+
+.profile:hover {
+    background-color:rgba(0, 0, 0, 0.05);
+}
+
+.inner-container {
+    width:50%;
+    overflow: hidden;
+}
+
+.avi-left {
+    float:left;
+    padding-left:10px;
+    padding-right:5px;
+}
+
+.avi-right {
+    float:right;
+    padding-left:5px;
+    padding-right:10px;
+}
+
+.name-container {
+    overflow:hidden;
+    width: calc(100% - 88px);
+}
+
+.name {
+    margin:0;
+    padding:5px;
+    padding-bottom:0;
+    font-family:"Proxima Nova";
+    color:#2c343b;
+    font-size:20px;
+}
+
+.handle {
+    clear:both;
+    margin:0;
+    padding:5px;
+    padding-top:0;
+    font-family:"Proxima Nova";
+    color:#52616e;
+    font-size:17px;
+}
+
+.score {
+    margin-top:10px;
+    color:#ffffff;
+    font-size:40px;
+    text-shadow:3px 3px #2c343b;
+    font-family:'Proxima Nova', sans-serif;
+    font-weight:bold;
 }
 
 #scoreboard {
     position:absolute;
-    top:800px;
-    height:350px;
+    bottom:20px;
+    height:80px;
     width:100%;
     background-color:#52616e;
 }
@@ -119,59 +145,12 @@ h1{
 #bestbox {
     float:right;
     width:50%;
-    
 }
 
-.pro {
-    height:72px;
-    width: 350px;
-    margin-top:45px;
-    margin-left:auto;
-    margin-right:auto;
-    background-color: rgba(0, 255, 36, 0);
-}
-
-
-
-.fleft {
-    float:left;
-}
-
-.fright {
-    float:right;
-}
-
-.name {
-    font-family:"Verdana";
-    margin:10px;
-    color:#2c343b;
-    font-size:20px;
-}
-
-.handle {
-    margin:10px;
-    color:#52616e;
-    font-size:17px;
-    clear:both;
-}
-
-.tophalf {
-    height:36px;
-    width:278px;
-    margin-top:0;
-}
-
-.bottomhalf {
-    height:36px;
-    width:278px;
-    margin-bottom:0;
-}
-
-.score {
-    text-shadow: 3px 3px #2c343b;
-    font-family:'Open Sans', sans-serif;
-    font-weight:bold;
-    margin-top:10px;
-    font-size:40px;
-    color:#ffffff;
+#footer {
+    position:absolute;
+    bottom:0px;
+    height:20px;
+    width:100%;
+    background-color:#2c343b;
 }
