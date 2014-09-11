@@ -8,6 +8,15 @@ var async = require("async");
 var TWITTER_CONSUMER_KEY = "28ppMUIt20JQ2CLVh4btoA";
 var TWITTER_CONSUMER_SECRET = "22lbZ0Akhu4DZTA2rpM47uSYZKdlXp6vyRWQlb6k";
 
+var redis = require("redis"),
+var redis_client = redis.createClient();
+/* can use with:
+    client.set("some key", "some val");
+    client.get("missingkey", function(err, reply) {
+         // reply is null when the key is missing
+        console.log(reply);
+    });
+});
 /******************************************************************************
  * passport
  */
