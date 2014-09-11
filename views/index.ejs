@@ -14,12 +14,10 @@
 
     <% if(typeof(user) != 'undefined') { %>
     <div id = "tweet-bar">
-        <p id = "tweet"> <%= tweet.text %></p>
+        <p> <%= tweet.text %></p>
     </div>
     <div id = "who-bar">
-        <p id = "who">
-            Who said that?
-        </p>
+        <p>Who said that?</p>
     </div>
     <div id = "container">
         <div class = "inner-container left">
@@ -68,9 +66,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div id = "scoreboard">
-      
     </div>
     <% } else { %>
         <a href="auth/twitter"> login </a></a>
