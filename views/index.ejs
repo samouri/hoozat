@@ -3,69 +3,53 @@
 <html lang="en-us">
 
 <head>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Lato:100,300,400' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src='//ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js' type='text/javascript'> </script>
     <script src="http://code.jquery.com/color/jquery.color-2.1.2.js"></script>
 </head>
 <center>
 <body>
-    <div id = "header"><h1> HOOZAT? </h1></div>
-
+    <div id="header-padding"></div>
+    <div id="header"><h1> HOOZAT? </h1></div>
     <% if(typeof(user) != 'undefined') { %>
-    <div id = "tweet-bar">
-        <p> <%= tweet.text %></p>
-    </div>
-    <div id = "who-bar">
-        <p>Who said that?</p>
-    </div>
-    <div id = "container">
-        <div class = "inner-container left">
-            <div class = "profile">
-                <div class="avi-left"><img src="<%=friends_data[0].photo %>"></div>
-                <div class="name-container left">
-                    <p class = "name left"><%= friends_data[0].name %> </p>
-                    <p class = "handle left">@<%= friends_data[0].screen_name %> </p>
+    <div id="content-box" class="rounded">
+        <div id = "tweet-bar">
+            <p> "<%= tweet.text %>"</p>
+        </div>
+        <div id = "container">
+            <div class = "inner-container left">
+                <% for (var i = 0; i < 3; i++) {%>
+                <% if (i == 2) { %>
+                <div class="profile last-profile rounded">
+                <% } else { %>
+                <div class="profile rounded">
+                <% } %>
+                    <div class="avi-left"><img class="picture rounded" src="<%=friends_data[i].photo %>"></div>
+                    <div class="name-container left">
+                        <p class="name left"><%= friends_data[i].name %> </p>
+                        <p class="handle left">@<%= friends_data[i].screen_name %> </p>
+                    </div>
                 </div>
+                <% } %>
             </div>
-            <div class = "profile">
-                <div class="avi-left"><img src="<%=friends_data[1].photo %>"></div>
-                <div class="name-container left">
-                    <p class = "name left"><%= friends_data[1].name %> </p>
-                    <p class = "handle left">@<%= friends_data[1].screen_name %> </p>
+            <div class="inner-container right">
+                <% for (var i = 3; i < 6; i++) {%>
+                <% if (i == 5) { %>
+                <div class="profile last-profile rounded">
+                <% } else { %>
+                <div class="profile rounded">
+                <% } %>
+                    <div class="avi-right"><img class="picture rounded"  src="<%=friends_data[i].photo %>"></div>
+                    <div class="name-container right">
+                        <p class="name right"><%= friends_data[i].name %> </p>
+                        <p class="handle right">@<%= friends_data[i].screen_name %> </p>
+                    </div>
                 </div>
-            </div>
-            <div class = "profile">
-                <div class="avi-left"><img src="<%=friends_data[2].photo %>"></div>
-                <div class="name-container left">
-                    <p class = "name left"><%= friends_data[2].name %> </p>
-                    <p class = "handle left">@<%= friends_data[2].screen_name %> </p>
-                </div>
+                <% } %>
             </div>
         </div>
-        <div class = "inner-container right">
-            <div class = "profile">
-                <div class="avi-right"><img src="<%=friends_data[3].photo %>"></div>
-                <div class="name-container right">
-                    <p class = "name right"><%= friends_data[3].name %> </p>
-                    <p class = "handle right">@<%= friends_data[3].screen_name %> </p>
-                </div>
-            </div>
-            <div class = "profile">
-                <div class="avi-right"><img src="<%=friends_data[4].photo %>"></div>
-                <div class="name-container right">
-                    <p class = "name right"><%= friends_data[4].name %> </p>
-                    <p class = "handle right">@<%= friends_data[4].screen_name %> </p>
-                </div>
-            </div>
-            <div class = "profile">
-                <div class="avi-right"><img src="<%=friends_data[5].photo %>"></div>
-                <div class="name-container right">
-                    <p class = "name right"><%= friends_data[5].name %> </p>
-                    <p class = "handle right">@<%= friends_data[5].screen_name %> </p>
-                </div>
-            </div>
-        </div>
+        <div class="end"></div>
     </div>
     <% } else { %>
         <a href="auth/twitter"> login </a></a>
@@ -73,7 +57,7 @@
 </body>
 </center>
 <footer id = "footer">
-        <script> 
+        <script>
             <% if(typeof(asyncResults) != 'undefined') { %>
                 var results = <%- JSON.stringify(asyncResults) %> 
                 var tweeter = <%- JSON.stringify(tweeter) %>
