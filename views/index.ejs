@@ -12,23 +12,22 @@
 <body>
     <div id="header-padding"></div>
     <div id="header"><h1> HOOZAT? </h1></div>
-    <% if(typeof(user) != 'undefined') { %>
     <div id="content-box" class="rounded">
         <div id = "tweet-bar">
-            <p> "<%= tweet.text %>"</p>
+            <p id="tweet"></p>
         </div>
-        <div id = "container">
-            <div class = "inner-container left">
+        <div id="container">
+            <div class="inner-container left">
                 <% for (var i = 0; i < 3; i++) {%>
                 <% if (i == 2) { %>
                 <div class="profile last-profile rounded">
                 <% } else { %>
                 <div class="profile rounded">
                 <% } %>
-                    <div class="avi-left"><img class="picture rounded" src="<%=friends_data[i].photo %>"></div>
+                    <div class="avi-left"><img class="picture rounded" src="" id="img<%= i %>"></div>
                     <div class="name-container left">
-                        <p class="name left"><%= friends_data[i].name %> </p>
-                        <p class="handle left">@<%= friends_data[i].screen_name %> </p>
+                        <p class="name left" id="name<%= i %>"></p>
+                        <p class="handle left" id="handle<%= i %>"></p>
                     </div>
                 </div>
                 <% } %>
@@ -40,10 +39,10 @@
                 <% } else { %>
                 <div class="profile rounded">
                 <% } %>
-                    <div class="avi-right"><img class="picture rounded"  src="<%=friends_data[i].photo %>"></div>
+                    <div class="avi-right"><img class="picture rounded" src="" id="img<%= i %>"></div>
                     <div class="name-container right">
-                        <p class="name right"><%= friends_data[i].name %> </p>
-                        <p class="handle right">@<%= friends_data[i].screen_name %> </p>
+                        <p class="name right" id="name<%= i %>"></p>
+                        <p class="handle right" id="handle<%= i %>"></p>
                     </div>
                 </div>
                 <% } %>
@@ -51,34 +50,49 @@
         </div>
         <div class="end"></div>
     </div>
-    <% } else { %>
-        <a href="auth/twitter"> login </a></a>
-    <% } %>
 </body>
 </center>
 <footer id = "footer">
-        <script>
-            <% if(typeof(asyncResults) != 'undefined') { %>
-                var results = <%- JSON.stringify(asyncResults) %> 
-                var tweeter = <%- JSON.stringify(tweeter) %>
-                var friend_ids = <%- JSON.stringify(friend_ids) %>
-                var rand_friend; var six_rand_friends = {};
-                $('.profile').click(function() {
-                    if( "@" + tweeter.screen_name.trim() === $(this).find(".handle")[0].innerText.trim()) {
-                        $(this).css('background-color', 'rgba(46, 204, 113, 1)');
-                    }
-                    else {
-                        $(this).css('background-color', 'rgba(231, 76, 60, 1)');
-                    }
-
-                    while (Object.keys(six_rand_friends).length < 6 && friend_ids.length >= Object.keys(six_rand_friends).length) {
-                        rand_friend = friend_ids[Math.floor(Math.random() * friend_ids.length)];
-                        six_rand_friends[rand_friend] = true;
-                    }
-                });
-            <% } %> 
+    <script> 
+        var params = <%- JSON.stringify(params) %>
+        var err =  <%- JSON.stringify(err) %>
+        var tweeter;
+    
+        // sets up a round: sets profile pics, tweet, names
+        function setupRound(params) {
+            tweeter = params.tweet.user;
             
-        </script> 
+            $("#tweet").text("\"" + params.tweet.text + "\"");
+            
+            $('.profile').css('background-color', 'rgba(0, 0, 0, 0.0)');
+            
+            for (var j = 0; j <= 5; j++) {
+               $("#img"+j).attr("src", params.friends_data[j].photo);
+               $("#name"+j).text(params.friends_data[j].name);
+               $("#handle"+j).text("@"+params.friends_data[j].screen_name);
+            }
+        }
+        setupRound(params);
+        
+        // on profile click: colors choice green/red and gets->sets new round
+        $('.profile').click(function () {
+            if( "@" + tweeter.screen_name.trim() === $(this).find(".handle")[0].innerText.trim()) {
+                $(this).css('background-color', 'rgba(0, 255, 36, 0.5)');
+            } else {
+                $(this).css('background-color', 'rgba(233, 37, 37, 0.5)');
+            }
+            
+            $.get('/getRound', function (data) {
+                var json = JSON.parse(data);
+                
+                if (json.err != null) {
+                    console.log(json.err);
+                } else {
+                    setupRound(json.params);
+                }
+            });
 
+        });
+    </script> 
 </footer>
 </html>
