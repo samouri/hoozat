@@ -107,11 +107,15 @@ function getRound(req, res, finalCallback) {
     {
     	// get friends and store them in req
         get_friends: function (callback) {
+            if (!req.session.friends === undefined) {
+                req.user.friends = req.session.friends;
+                callback(err, null);
+            }
             T.get('friends/ids', {screen_name: req.user.username}, function (err, reply) {
                 if (err === null) {
                     req.user.friends = reply;
+                    req.session.friends = reply;
                 }
-                
                 callback(err, null);
             });
         },
@@ -221,7 +225,7 @@ app.get('/getRound', function (req, res) {
         // Logged in. Associate Twitter account with user.
         getRound(req, res, function (err, params) { 
         	res.send({err: err, params: params});
-        	});
+       	});
     }
 });
 /*
