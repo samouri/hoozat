@@ -96,7 +96,11 @@ function getRound(req, res, finalCallback) {
         access_token: req.user.info.access_token,
         access_token_secret: req.user.info.access_token_secret
     });
-	
+    if(req.session.current_num_correct) {
+	    req.session.current_num_correct++;
+    } else {
+        req.session.current_num_correct = 0;
+    }
     async.series(
     /* Run the functions in the tasks array in series, each one running once the previous function has completed.
 	 If any functions in the series pass an error to its callback, no more functions are run, and callback is 
@@ -107,17 +111,18 @@ function getRound(req, res, finalCallback) {
     {
     	// get friends and store them in req
         get_friends: function (callback) {
-            if (!req.session.friends === undefined) {
+            if (! (req.session.friends === undefined)) {
                 req.user.friends = req.session.friends;
-                callback(err, null);
+                callback(null);
+            } else {
+                T.get('friends/ids', {screen_name: req.user.username}, function (err, reply) {
+                    if (err === null) {
+                        req.user.friends = reply;
+                        req.session.friends = reply;
+                    }
+                    callback(err, null);
+                });
             }
-            T.get('friends/ids', {screen_name: req.user.username}, function (err, reply) {
-                if (err === null) {
-                    req.user.friends = reply;
-                    req.session.friends = reply;
-                }
-                callback(err, null);
-            });
         },
         // pick six friends, choose one for round, and store in params
         pick_the_six_friends: function (callback) {
@@ -213,7 +218,7 @@ app.get('/', function (req, res) {
         // Logged in. Associate Twitter account with user.
         getRound(req, res, function (err, params) { 
 			res.render('index', {err: err, params: params});
-        	});
+        });
     }
 });
 
