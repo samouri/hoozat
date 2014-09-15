@@ -24,7 +24,7 @@
                 <% } else { %>
                 <div class="profile rounded">
                 <% } %>
-                    <div class="avi-left"><img class="picture rounded" src="" id="img<%= i %>"></div>
+                    <img class="picture rounded left" id="img<%= i %>">
                     <div class="name-container left">
                         <p class="name left" id="name<%= i %>"></p>
                         <p class="handle left" id="handle<%= i %>"></p>
@@ -39,7 +39,7 @@
                 <% } else { %>
                 <div class="profile rounded">
                 <% } %>
-                    <div class="avi-right"><img class="picture rounded" src="" id="img<%= i %>"></div>
+                    <img class="picture rounded right"  id="img<%= i %>">
                     <div class="name-container right">
                         <p class="name right" id="name<%= i %>"></p>
                         <p class="handle right" id="handle<%= i %>"></p>
@@ -64,7 +64,8 @@
             
             $("#tweet").text("\"" + params.tweet.text + "\"");
             
-            $('.profile').css('background-color', 'rgba(0, 0, 0, 0.0)');
+            $('.profile').removeClass("green");
+            $('.profile').removeClass("red");
             
             for (var j = 0; j <= 5; j++) {
                $("#img"+j).attr("src", params.friends_data[j].photo);
@@ -78,10 +79,10 @@
         $('.profile').click(function () {
             var correct;
             if( "@" + tweeter.screen_name.trim() === $(this).find(".handle")[0].innerText.trim()) {
-                $(this).css('background-color', 'rgba(0, 255, 36, 0.5)');
+                $(this).addClass("green");
                 correct = true;
             } else {
-                $(this).css('background-color', 'rgba(233, 37, 37, 0.5)');
+                $(this).addClass("red");
                 correct = false;
             }
             //if(correct === true) { 
