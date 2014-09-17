@@ -200,3 +200,7 @@ h2 {
 .red {
     background-color:rgba(231, 76, 60, 1) !important;
 }
+
+.score {
+    display: none;
+}

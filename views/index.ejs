@@ -13,6 +13,9 @@
 <body>
     <div id="header-padding"></div>
     <div id="header"><h1> HOOZAT? </h1></div>
+    <h2 id="final_score" class="score"></h2>
+    <h2 id="best_score" class="score"></h2>
+    <a id="play_again" class="score"><div class="button"><p class="button-text">Play Again</p></div></a>
     <div id="content-box" class="rounded">
         <div id = "tweet-bar">
             <p id="tweet"></p>
@@ -86,9 +89,9 @@
                 $(this).addClass("red");
                 correct = false;
             }
-            //if(correct === true) { 
-                $.get('/getRound', function (data) {
-                    var json = JSON.parse(data);
+            if(correct) { 
+                $.get('/getRound', function (response) {
+                    var json = JSON.parse(response);
 
                     if (json.err != null) {
                         console.log(json.err);
@@ -96,10 +99,30 @@
                         setupRound(json.params);
                     }
                 });
-           // } else  {
-               // go to end-of-game page
-           //}
+            } else  {
+                $.get('/finalscore', function(response) {
+                    var score_data = JSON.parse(response);
+                    $('#final_score').text("Current: " + score_data.num_correct);
+                    $('#best_score').text("Best: " + score_data.max_num_correct);
 
+                    $("#content-box").hide();
+                    $(".score").show();
+                });
+            }
+        });
+        $("#play_again").click(function() {
+            $(".score").hide();
+
+            $.get('/getRound', function (response) {
+                var json = JSON.parse(response);
+
+                if (json.err != null) {
+                    console.log(json.err);
+                } else {
+                    setupRound(json.params);
+                    $("#content-box").show();
+                }
+            });
         });
     </script> 
 </footer>

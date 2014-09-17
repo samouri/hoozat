@@ -8,10 +8,8 @@ var async = require("async");
 var TWITTER_CONSUMER_KEY = "28ppMUIt20JQ2CLVh4btoA";
 var TWITTER_CONSUMER_SECRET = "22lbZ0Akhu4DZTA2rpM47uSYZKdlXp6vyRWQlb6k";
 
-/*
-var redis = require("redis"),
+var redis = require("redis");
 var redis_client = redis.createClient();
-*/
 /* can use with:
     client.set("some key", "some val");
     client.get("missingkey", function(err, reply) {
@@ -96,11 +94,12 @@ function getRound(req, res, finalCallback) {
         access_token: req.user.info.access_token,
         access_token_secret: req.user.info.access_token_secret
     });
-    if(req.session.current_num_correct) {
+    if(! (typeof req.session.current_num_correct === 'undefined')) {
 	    req.session.current_num_correct++;
     } else {
         req.session.current_num_correct = 0;
     }
+    console.log(req.session.current_num_correct);
     async.series(
     /* Run the functions in the tasks array in series, each one running once the previous function has completed.
 	 If any functions in the series pass an error to its callback, no more functions are run, and callback is 
@@ -109,9 +108,8 @@ function getRound(req, res, finalCallback) {
     /* An array or object containing functions to run, each function is passed a callback(err, result)
      it must call on completion with an error err (which can be null) and an optional result value. */
     {
-    	// get friends and store them in req
         get_friends: function (callback) {
-            if (! (req.session.friends === undefined)) {
+            if (! (typeof req.session.friends === 'undefined')) {
                 req.user.friends = req.session.friends;
                 callback(null);
             } else {
@@ -218,6 +216,28 @@ app.get('/', function (req, res) {
         // Logged in. Associate Twitter account with user.
         getRound(req, res, function (err, params) { 
 			res.render('index', {err: err, params: params});
+        });
+    }
+});
+
+app.get('/finalscore', function (req, res) {
+    console.log(req.user.username);
+    if (!req.user) {
+        // not logged in
+        res.send({error: "there is no logged in user"});
+    } else {
+        redis_client.get(req.user.username + "max-score", function(err, reply) {
+            var max_score = parseInt(reply);
+            if(max_score == null || max_score < req.session.current_num_correct) {
+                max_score = req.session.current_num_correct;
+                redis_client.set(req.user.username + "max-score", max_score.toString(), redis.print);
+            }
+            params = {
+                num_correct: req.session.current_num_correct,
+                max_num_correct: max_score
+            };
+            req.session.current_num_correct = -1;
+            res.send(params);
         });
     }
 });
