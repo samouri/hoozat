@@ -99,7 +99,6 @@ function getRound(req, res, finalCallback) {
     } else {
         req.session.current_num_correct = 0;
     }
-    console.log(req.session.current_num_correct);
     async.series(
     /* Run the functions in the tasks array in series, each one running once the previous function has completed.
 	 If any functions in the series pass an error to its callback, no more functions are run, and callback is 
@@ -221,14 +220,13 @@ app.get('/', function (req, res) {
 });
 
 app.get('/finalscore', function (req, res) {
-    console.log(req.user.username);
     if (!req.user) {
         // not logged in
         res.send({error: "there is no logged in user"});
     } else {
         redis_client.get(req.user.username + "max-score", function(err, reply) {
             var max_score = parseInt(reply);
-            if(max_score == null || max_score < req.session.current_num_correct) {
+            if(reply == null || isNaN(max_score) || max_score < req.session.current_num_correct) {
                 max_score = req.session.current_num_correct;
                 redis_client.set(req.user.username + "max-score", max_score.toString(), redis.print);
             }

@@ -1,0 +1,42 @@
+{
+  "name": "hoozat",
+  "version": "1.0.0",
+  "description": "How well do you know your tweeps?",
+  "main": "server.js",
+  "engines": {
+    "node": "0.10.x"
+  },
+  "dependencies": {
+    "async": "^0.2.10",
+    "ejs": "^0.8.8",
+    "express": "^3.4.8",
+    "hiredis": "^0.1.17",
+    "isarray": "0.0.1",
+    "passport": "^0.2.1",
+    "passport-twitter": "^1.0.2",
+    "q": "^1.0.1",
+    "redis": "^0.12.1",
+    "socket.io": "^0.9.17",
+    "twit": "^1.1.18"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samouri/hoozat.git"
+  },
+  "keywords": [
+    "twitter",
+    "quiz",
+    "game"
+  ],
+  "author": "Ali Eskandari, JB Wills, Jake Fried",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/samouri/hoozat/issues"
+  },
+  "homepage": "https://github.com/samouri/hoozat"
+}
