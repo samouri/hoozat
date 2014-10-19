@@ -9,7 +9,16 @@ var TWITTER_CONSUMER_KEY = "28ppMUIt20JQ2CLVh4btoA";
 var TWITTER_CONSUMER_SECRET = "22lbZ0Akhu4DZTA2rpM47uSYZKdlXp6vyRWQlb6k";
 
 var redis = require("redis");
-var redis_client = redis.createClient();
+var redis_client;
+// taken from https://devcenter.heroku.com/articles/redistogo#using-with-node-js
+if (process.env.REDISTOGO_URL) {
+    var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+    redis_client = redis.createClient(rtg.port, rtg.hostname);
+    redis_client.auth(rtg.auth.split(":")[1]);
+} else {
+    redis_client = redis.createClient();
+}
+
 /* can use with:
     client.set("some key", "some val");
     client.get("missingkey", function(err, reply) {
